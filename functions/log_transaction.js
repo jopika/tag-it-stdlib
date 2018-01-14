@@ -52,7 +52,7 @@ async function report_transaction(db, receiver, exhibit, collectible, context) {
 	const user = await db.collection("user").findOne({ tag: receiver });
 
 	const { name } = user;
-	const item = exhibit.collectibles[collectible].description;
+	const item = exhibit.collectibles[collectible].name;
 
 	// https://www.hongkiat.com/blog/send-messages-to-slack/
 	let em = Math.floor(Math.random() * 7);
