@@ -23,6 +23,6 @@ module.exports = async function create_user(tag, name, context) {
 	// set tag and name for user, upsert/create if does not exist
 	const r = await db
 		.collection("user")
-		.findOneAndUpdate({ tag }, { tag, name }, { upsert: true });
+		.findOneAndUpdate({ tag }, { tag, name, inventory: [] }, { upsert: true });
 	return r.ok;
 };
