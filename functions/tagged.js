@@ -6,11 +6,11 @@ let STEAL_BOOL = false;
 
 /** 
  * Transfers an item from target (exhibit) to user
- * @param {string} user_tag - user ID that recieves item
- * @param {string} target_tag - target ID to recieve item from
- * @returns {bool} success validation
+ * @param {string} userTag - user ID that recieves item
+ * @param {string} targetTag - target ID to recieve item from
+ * @returns {boolean} success validation
  */
-module.exports = async function tagged(user_tag, target_tag, context) {
+module.exports = async function tagged(userTag, targetTag, context) {
     let uri = process.env["MONGO_URI"];
 
     if (db == null) {
@@ -23,13 +23,22 @@ module.exports = async function tagged(user_tag, target_tag, context) {
     let exhibitTable = db.collection("exhibit");
     let userTable   = db.collection("user");
 
-    let userObj     = userTable.findone({"id":userTag});
-    let targetObj   = exhibitTable.findone({"id":targetTag});
+    const [userObj, targetObj] = await Promise.all([
+        userTable.findOne({"tag":userTag}),
+        exhibitTable.findOne({"tag":targetTag})
+    ]);
 
+    if(userObj == null) {
+        console.log("userObj is null");
+        return false;
+    }
+    if(targetObj == null) {
+        console.log("targetObj is null");
+        return false;
+    }
     let userInventory   = userObj.inventory;
 
     // TODO: Check this
-    let targetCollection = targetObj.collection; 
     let sizeOfCollection = Object.keys(targetCollection).length;
     let randomNumber = Math.floor((Math.random() * 100)) % sizeOfCollection;
     let item = targetCollection[randomNumber];

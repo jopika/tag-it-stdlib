@@ -23,5 +23,5 @@ module.exports = async function create_user(tag, name, context) {
 	const r = await db
 		.collection("user")
 		.findOneAndUpdate({ tag }, { tag, name, inventory: [] }, { upsert: true });
-	return r.ok;
+	return Boolean(r.ok);
 };
