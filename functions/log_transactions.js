@@ -15,10 +15,11 @@ module.exports = async function log_transaction(
 	target,
 	receiver,
 	item,
-	date = Date.now(),
+	date = null,
 	context
 ) {
 	let uri = process.env["MONGO_URI"];
+	date = date || Date.now();
 
 	// Load database unless cached
 	if (db == null) {
