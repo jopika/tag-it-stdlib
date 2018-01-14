@@ -10,11 +10,16 @@ let db = null;
 module.exports = async function is_supertag(tag, context) {
 	let uri = process.env["MONGO_URI"];
 
+	// Load database unless cached
 	if (db == null) {
+		// (async) obtain an instance of the client
 		const client = await MongoClient.connect(uri);
+		// connect to the database
 		db = client.db("tagit");
 	}
 
-	const user = db.collection("user").findOne({ tag });
-	return user.supertag;
+	// get a user where tag equals tag from the user table
+	const user = await db.collection("user").findOne({ tag });
+	// if user is not null, return supertag property
+	return user && user.supertag;
 };
