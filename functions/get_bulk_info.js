@@ -5,7 +5,7 @@ let db = null;
 /**
  * Get info about exhibits
  * @param {array} ids
- * @returns {array} items
+ * @returns {object} items
  */
 module.exports = async function get_bulk_info(ids, context) {
 	let uri = process.env["MONGO_URI"];
@@ -19,16 +19,13 @@ module.exports = async function get_bulk_info(ids, context) {
 	}
 
 	// Return a map of all items that match the given IDs
-	const cursor = db
-		.collection("exhibit")
-		.find({ _id: { $in: ids.map(id => ObjectID.createFromHexString(id)) } });
+	const cursor = db.collection("exhibit").find({ key: { $in: ids } });
 
 	let exhibits = {};
 	while (await cursor.hasNext()) {
 		const exhibit = await cursor.next();
-		const id = exhibit._id.toHexString();
-		exhibits[id] = {
-			id,
+		exhibits[exhibit.key] = {
+			key: exhibit.key,
 			name: exhibit.name,
 			photoUrl: exhibit.photoUrl,
 			collectibles: exhibit.collectibles
