@@ -1,5 +1,5 @@
 const { MongoClient } = require("mongodb");
-var request = require('request');
+const fetch = require("node-fetch");
 
 let db = null;
 
@@ -37,25 +37,27 @@ module.exports = async function log_transaction(
 
 	const r = await db.collection("transaction").insertOne(transaction);
 
-	request.post(
-		'https://hooks.slack.com/services/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'
+	const response = await fetch(
+		"https://hooks.slack.com/services/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",
 		{
-			"access_token": "xoxp-XXXXXXXX-XXXXXXXX-XXXXX",
-				"scope": "incoming-webhook",
-				"team_name": "Team Installing Your Hook",
-				"incoming_webhook": {
-					"url": "https://hooks.slack.com/TXXXXX/BXXXXX/XXXXXXXXXX",
-						"channel": "#channel-it-will-post-to",
-						"channel_id": "C05002EAE",
-						"configuration_url": "https://teamname.slack.com/services/BXXXXX"
-					        }
-		}
-		function (error, response, body) {
-			if (!error && response.statusCode == 200) {
-				console.log(body);
+			method: "POST",
+			body: {
+				access_token: "xoxp-XXXXXXXX-XXXXXXXX-XXXXX",
+				scope: "incoming-webhook",
+				team_name: "Team Installing Your Hook",
+				incoming_webhook: {
+					url: "https://hooks.slack.com/TXXXXX/BXXXXX/XXXXXXXXXX",
+					channel: "#channel-it-will-post-to",
+					channel_id: "C05002EAE",
+					configuration_url: "https://teamname.slack.com/services/BXXXXX"
+				}
 			}
 		}
 	);
+
+	if (!response.ok) {
+		console.error("problem 5");
+	}
 
 	return r.result.ok;
 };
