@@ -1,4 +1,5 @@
 const { MongoClient } = require("mongodb");
+const lib = require("lib");
 const fetch = require("node-fetch");
 
 let db = null;
@@ -7,14 +8,16 @@ let db = null;
  * Log a transaction
  * @param {string} target
  * @param {string} receiver
- * @param {string} item
+ * @param {string} itemkey
+ * @param {number} collectible
  * @param {number} date
  * @returns {boolean} ok
  */
 module.exports = async function log_transaction(
 	target,
 	receiver,
-	item,
+	itemkey,
+	collectible,
 	date = null,
 	context
 ) {
@@ -33,19 +36,42 @@ module.exports = async function log_transaction(
 		target,
 		receiver,
 		item,
+		collectible,
 		date
 	};
 
 	const r = await db.collection("transaction").insertOne(transaction);
 
-	//https://www.hongkiat.com/blog/send-messages-to-slack/
-	var pl = 'payload= {"username": "@taggy", "icon_emoji": ":thinking_face:", "channel": "#general", "text": "get the name of person from database" + " did a gotcha! They gotcha\'d " + item + "!" }';
+	await report_transaction(db, receiver, itemkey, collectible, context);
+
+	return Boolean(r.result.ok);
+};
+
+async function report_transaction(db, receiver, itemkey, collectible, context) {
+	const [user, exhibit] = await Promise.all([
+		db.collection("user").findOne({ tag: receiver }),
+		lib[`${context.service.identifier}.get_info`](itemkey)
+	]);
+
+	const { name } = user;
+	const item = exhibit.collectibles[collectible].description;
+
+	// https://www.hongkiat.com/blog/send-messages-to-slack/
+	let pl = `payload= ${JSON.stringify({
+		username: "@taggy",
+		icon_emoji: ":thinking_face:",
+		channel: "#general",
+		text: name + " did a gotcha! They gotcha'd " + item + "!"
+	})}`;
 
 	const response = await fetch(
 		"https://hooks.slack.com/services/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",
 		{
 			method: "POST",
-			body: pl
+			body: pl,
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded"
+			}
 			//{
 			//	access_token: "xoxp-XXXXXXXX-XXXXXXXX-XXXXX",
 			//	scope: "incoming-webhook",
@@ -63,6 +89,4 @@ module.exports = async function log_transaction(
 	if (!response.ok) {
 		console.error("problem 5");
 	}
-
-	return r.result.ok;
-};
+}
