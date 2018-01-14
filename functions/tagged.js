@@ -18,13 +18,13 @@ module.exports = async function tagged(userTag, targetTag, context) {
 	}
 	// ASSUME: This function is called when the target is an exhibit.
 
-	const pastTapped = await db
+	/*const pastTapped = await db
 		.collection("transaction")
 		.findOne({ target: targetTag, receiver: userTag });
 
 	if (pastTapped) {
 		throw { ok: false, message: "You already tapped this tag" };
-	}
+	}*/
 
 	const userTable = db.collection("user");
 	const [userObj, targetObj] = await Promise.all([
