@@ -55,11 +55,51 @@ async function report_transaction(db, receiver, exhibit, collectible, context) {
 	const item = exhibit.collectibles[collectible].description;
 
 	// https://www.hongkiat.com/blog/send-messages-to-slack/
+	let em = Math.floor(Math.random() * 7);
+	let mes = Math.floor(Math.random() * 4);
+	let emoji = "thinking_face";
+	let message = "tagged";
+	switch (mes) {
+		case 0:
+			message = "found";
+			break;
+		case 1:
+			message = "got";
+			break;
+		case 2:
+			message = "retrieved";
+			break;
+	}
+	switch (em) {
+		case 0:
+			emoji = "ok_hand";
+			break;
+		case 1:
+			emoji = "thumbsup";
+			break;
+		case 2:
+			emoji = "fist";
+			break;
+		case 3:
+			emoji = "the_horns";
+			break;
+		case 4:
+			emoji = "clap";
+			break;
+		case 5:
+			emoji = "grin";
+			break;
+	}
+	let ex = Math.floor(Math.random()*3)+1;
+	let excl = "";
+	for (i = 0; i <= ex; i++) {
+		excl += "!";
+	}
 	let pl = `payload= ${JSON.stringify({
 		username: "@taggy",
-		icon_emoji: ":thinking_face:",
+		icon_emoji: ":" + emoji + ":",
 		channel: "#general",
-		text: name + " did a gotcha! They gotcha'd " + item + "!"
+		text: name + " " + message + " " + item + excl
 	})}`;
 
 	const response = await fetch(
@@ -70,17 +110,6 @@ async function report_transaction(db, receiver, exhibit, collectible, context) {
 			headers: {
 				"Content-Type": "application/x-www-form-urlencoded"
 			}
-			//{
-			//	access_token: "xoxp-XXXXXXXX-XXXXXXXX-XXXXX",
-			//	scope: "incoming-webhook",
-			//	team_name: "Team Installing Your Hook",
-			//	incoming_webhook: {
-			//		url: "https://hooks.slack.com/TXXXXX/BXXXXX/XXXXXXXXXX",
-			//		channel: "#channel-it-will-post-to",
-			//		channel_id: "C05002EAE",
-			//		configuration_url: "https://teamname.slack.com/services/BXXXXX"
-			//	}
-			//}
 		}
 	);
 
