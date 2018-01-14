@@ -37,21 +37,25 @@ module.exports = async function log_transaction(
 
 	const r = await db.collection("transaction").insertOne(transaction);
 
+	//https://www.hongkiat.com/blog/send-messages-to-slack/
+	var pl = 'payload= {"username": "@taggy", "icon_emoji": ":thinking_face:", "channel": "#general", "text": "get the name of person from database" + " did a gotcha! They gotcha\'d " + item + "!" }';
+
 	const response = await fetch(
 		"https://hooks.slack.com/services/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",
 		{
 			method: "POST",
-			body: {
-				access_token: "xoxp-XXXXXXXX-XXXXXXXX-XXXXX",
-				scope: "incoming-webhook",
-				team_name: "Team Installing Your Hook",
-				incoming_webhook: {
-					url: "https://hooks.slack.com/TXXXXX/BXXXXX/XXXXXXXXXX",
-					channel: "#channel-it-will-post-to",
-					channel_id: "C05002EAE",
-					configuration_url: "https://teamname.slack.com/services/BXXXXX"
-				}
-			}
+			body: pl
+			//{
+			//	access_token: "xoxp-XXXXXXXX-XXXXXXXX-XXXXX",
+			//	scope: "incoming-webhook",
+			//	team_name: "Team Installing Your Hook",
+			//	incoming_webhook: {
+			//		url: "https://hooks.slack.com/TXXXXX/BXXXXX/XXXXXXXXXX",
+			//		channel: "#channel-it-will-post-to",
+			//		channel_id: "C05002EAE",
+			//		configuration_url: "https://teamname.slack.com/services/BXXXXX"
+			//	}
+			//}
 		}
 	);
 
