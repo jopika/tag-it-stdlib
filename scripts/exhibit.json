@@ -34,7 +34,7 @@
 	},
 	{
 		"key": "whale",
-		"tag": "456",
+		"tag": "-L-DLVvZF9XBlQgbUpJv",
 		"name": "Blue whale",
 		"photoUrl":
 			"https://www.vancouverobserver.com/sites/vancouverobserver.com/files/imagecache/vo_scale_w850/images/article/body/IMG_0615_0.JPG",
@@ -53,6 +53,35 @@
 				"name": "Fins of Whale",
 				"description":
 					"Blue whales mature at the age of 5 or 6 years. After reaching maturity, the females give birth to a calf every 2 or 3 years. Gestation takes 11 months, and the newborn calves are 8 m long and weigh about 4 tonnes. In size and weight, they are approximately as big as 2 minivans."
+			}
+		}
+	},
+	{
+		"key": "exodia",
+		"tag": "-KyOAzxViyAmFQPGOJ3H",
+		"name": "Exodia",
+		"photoUrl":
+			"https://images-na.ssl-images-amazon.com/images/I/81aM0V7iQPL._SL1500_.jpg",
+		"collectibles": {
+			"0b001": {
+				"name": "Right arm of the Forbidden One",
+				"description": "What is this?"
+			},
+			"0b010": {
+				"name": "Left arm of the Forbidden One",
+				"description": "What is this?"
+			},
+			"0b100": {
+				"name": "Right leg of the Forbidden One",
+				"description": "What is this?"
+			},
+			"0b1000": {
+				"name": "Left leg of the Forbidden One",
+				"description": "What is this?"
+			},
+			"0b10000": {
+				"name": "Head of the Forbidden One",
+				"description": "Who is this?"
 			}
 		}
 	}
