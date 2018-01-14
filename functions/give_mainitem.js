@@ -6,12 +6,12 @@ const ASC = 1;
 const DESC = -1;
 
 /**
- * Turn a user into a supertag
+ * Give user a main item
  * @param {string} tag user's tag
  * @param {string} item what item will they supply
  * @returns {any}
  */
-module.exports = async function make_supertag(tag, item, context) {
+module.exports = async function give_mainitem(tag, item, context) {
 	let uri = process.env["MONGO_URI"];
 
 	// Load database unless cached
@@ -25,6 +25,6 @@ module.exports = async function make_supertag(tag, item, context) {
 	// get a user where tag equals tag from the user table
 	await db
 		.collection("user")
-		.findOneAndUpdate({ tag }, { $set: { supertag: item } });
+		.findOneAndUpdate({ tag }, { $set: { mainitem: item } });
 	return true;
 };

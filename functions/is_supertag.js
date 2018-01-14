@@ -20,6 +20,6 @@ module.exports = async function is_supertag(tag, context) {
 
 	// get a user where tag equals tag from the user table
 	const user = await db.collection("user").findOne({ tag });
-	// if user is not null, return supertag property
-	return user && user.supertag != null;
+	// if user is not null, return has mainitem property
+	return user && user.mainitem != null;
 };
