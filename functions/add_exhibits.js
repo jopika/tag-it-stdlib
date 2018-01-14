@@ -4,8 +4,8 @@ let db = null;
 
 /**
  * Add exhibits
- * @param {string} a
- * @param {object} list
+ * @param {string} a first param can't be an object
+ * @param {object} list exhibits JSON object
  * @returns {object} insertedIds
  */
 module.exports = async function add_exhibits(a = "", list, context) {
@@ -25,11 +25,17 @@ module.exports = async function add_exhibits(a = "", list, context) {
 			let collectibles = {};
 			for (const bit of Object.keys(list[key].collectibles)) {
 				const num = Number(bit);
-				collectibles[num] = list[key].collectibles[bit];
+				const source = list[key].collectibles[bit];
+				collectibles[num] = {
+					bit: num,
+					name: source.name,
+					description: source.description
+				};
 			}
 
 			return {
 				key,
+				tag: list[tag].name,
 				name: list[key].name,
 				photoUrl: list[key].photoUrl,
 				collectibles

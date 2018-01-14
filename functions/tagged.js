@@ -2,13 +2,12 @@ const { MongoClient } = require("mongodb");
 const lib = require("lib");
 
 let db = null;
-let STEAL_BOOL = false;
 
-/** 
+/**
  * Transfers an item from target (exhibit) to user
  * @param {string} userTag - user ID that recieves item
  * @param {string} targetTag - target ID to recieve item from
- * @returns {boolean} success validation
+ * @returns {object} success validation
  */
 module.exports = async function tagged(userTag, targetTag, context) {
     let uri = process.env["MONGO_URI"];
@@ -17,44 +16,49 @@ module.exports = async function tagged(userTag, targetTag, context) {
         const client = await MongoClient.connect(uri);
         db = client.db("tagit");
     }
-    // ASSUME: This function is called when the
-    // target is an exhibit.
+    // ASSUME: This function is called when the target is an exhibit.
 
-    let exhibitTable = db.collection("exhibit");
-    let userTable   = db.collection("user");
+    const pastTapped = await db
+        .collection("transaction")
+        .findOne({ target: targetTag, receiver: userTag });
 
+    if (pastTapped) {
+        throw { ok: false, message: "You already tapped this tag" };
+    }
+
+    const userTable = db.collection("user");
     const [userObj, targetObj] = await Promise.all([
-        userTable.findOne({"tag":userTag}),
-        exhibitTable.findOne({"tag":targetTag})
+        userTable.findOne({ tag: userTag }),
+        db.collection("exhibit").findOne({ tag: targetTag })
     ]);
 
-    if(userObj == null) {
-        console.log("userObj is null");
-        return false;
+    if (userObj == null) {
+        throw { ok: false, message: "user does not exist" };
     }
-    if(targetObj == null) {
-        console.log("targetObj is null");
-        return false;
+    if (targetObj == null) {
+        throw { ok: false, message: "target does not exist" };
     }
-    let userInventory   = userObj.inventory;
+    let userInventory = userObj.inventory;
 
     // TODO: Check this
-    let sizeOfCollection = Object.keys(targetCollection).length;
-    let randomNumber = Math.floor((Math.random() * 100)) % sizeOfCollection;
-    let item = targetCollection.get(randomNumber);
+    const collection = Object.keys(targetObj.collectibles).map(
+        k => targetObj.collectibles[k]
+    );
+    let sizeOfCollection = collection.length;
+    let randomNumber = Math.floor(Math.random() * 100) % collection.length;
+    let item = collection[randomNumber];
 
-    if(userInventory.find(i => i.key === item.key && i.bit === item.bit) == null) {
-        // not found
-        userInventory.push(item);
-    } else {
-        console.log("Item already exists in the user inventory");
-    }
+    userInventory.push(item);
 
-    userTable.updateOne({"id":userTag}, 
-        {$set: {"inventory": userInventory}});
-    
-    await lib[`${context.service.identifier}.log_transaction`](userTag,
-     targetTag, item, context);
+    userTable.updateOne({ id: userTag }, { $set: { inventory: userInventory } });
 
-    return true;
-}
+    await lib[`${context.service.identifier}.log_transaction`](
+        userTag,
+        targetTag,
+        targetObj,
+        item.bit,
+        context
+    );
+
+    return { ok: true };
+};

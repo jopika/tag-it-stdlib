@@ -1,5 +1,7 @@
-{
-	"skeleton": {
+[
+	{
+		"key": "mummy",
+		"tag": "123",
 		"name": "Mummy",
 		"photoUrl":
 			"https://wonderopolis.org/wp-content/uploads/2016/12/Mummydreamstime_xxl_25590803.jpg",
@@ -30,4 +32,4 @@
 			}
 		}
 	}
-}
+]

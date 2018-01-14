@@ -6,7 +6,7 @@ let db = null;
  * Create or update a user
  * @param {string} tag tag string
  * @param {string} name name of the user
- * @returns {boolean} ok
+ * @returns {object} ok
  */
 module.exports = async function create_user(tag, name, context) {
 	let uri = process.env["MONGO_URI"];
@@ -19,9 +19,17 @@ module.exports = async function create_user(tag, name, context) {
 		db = client.db("tagit");
 	}
 
-	// set tag and name for user, upsert/create if does not exist
-	const r = await db
-		.collection("user")
-		.findOneAndUpdate({ tag }, { tag, name, inventory: [] }, { upsert: true });
-	return Boolean(r.ok);
+	const collection = db.collection("user");
+
+	const user = await collection.findOne({ tag });
+	if (user) {
+		const r = await collection.updateOne(user, { $set: { tag, name } });
+		return {
+			ok: Boolean(r.result.ok),
+			message: `Updated ${tag}`
+		};
+	} else {
+		const r = await collection.insertOne({ tag, name, inventory: [] });
+		return { ok: Boolean(r.result.ok), message: "New user" };
+	}
 };
