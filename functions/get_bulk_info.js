@@ -1,4 +1,4 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectID } = require("mongodb");
 
 let db = null;
 
@@ -19,7 +19,9 @@ module.exports = async function get_bulk_info(ids, context) {
 	}
 
 	// Return a map of all items that match the given IDs
-	const cursor = db.collection("exhibit").find({ _id: { $in: ids } });
+	const cursor = db
+		.collection("exhibit")
+		.find({ _id: { $in: ids.map(id => ObjectID.createFromHexString(id)) } });
 
 	let exhibits = {};
 	while (await cursor.hasNext()) {
