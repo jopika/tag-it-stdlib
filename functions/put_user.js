@@ -12,7 +12,7 @@ const DESC = -1;
  * @param {string} hint user written hint about their location
  * @returns {boolean} true if user did not exist
  */
-module.exports = async function put_user(tag, name, hint, context) {
+module.exports = async function put_user(tag, name, hint = "", context) {
 	let uri = process.env["MONGO_URI"];
 
 	// Load database unless cached
