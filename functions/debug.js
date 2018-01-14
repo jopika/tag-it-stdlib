@@ -4,9 +4,10 @@ let db = null;
 
 /**
  * Download EVERYTHING
+ * @param {boolean} wipe clean the db for testing
  * @returns {object} everything.
  */
-module.exports = async function debug(context) {
+module.exports = async function debug(wipe = false, context) {
 	let uri = process.env["MONGO_URI"];
 
 	// Load database unless cached
@@ -23,13 +24,25 @@ module.exports = async function debug(context) {
 		db.collection("transaction")
 	];
 
-	const [users, exhibits, transactions] = await Promise.all(
-		collections.map(async collection => collection.find().toArray())
-	);
+	if (wipe) {
+		await Promise.all(
+			collections.map(async collection => collection.deleteMany())
+		);
 
-	return {
-		users,
-		exhibits,
-		transactions
-	};
+		return {
+			users: [],
+			exhibits: [],
+			transactions: []
+		};
+	} else {
+		const [users, exhibits, transactions] = await Promise.all(
+			collections.map(async collection => collection.find().toArray())
+		);
+
+		return {
+			users,
+			exhibits,
+			transactions
+		};
+	}
 };
