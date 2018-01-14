@@ -41,9 +41,14 @@ module.exports = async function tagged(userTag, targetTag, context) {
     // TODO: Check this
     let sizeOfCollection = Object.keys(targetCollection).length;
     let randomNumber = Math.floor((Math.random() * 100)) % sizeOfCollection;
-    let item = targetCollection[randomNumber];
+    let item = targetCollection.get(randomNumber);
 
-    userInventory.push(item);
+    if(userInventory.find(i => i.key === item.key && i.bit === item.bit) == null) {
+        // not found
+        userInventory.push(item);
+    } else {
+        console.log("Item already exists in the user inventory");
+    }
 
     userTable.updateOne({"id":userTag}, 
         {$set: {"inventory": userInventory}});
