@@ -37,14 +37,26 @@ module.exports = async function log_transaction(
 
 	const r = await db.collection("transaction").insertOne(transaction);
 
-	//https://www.hongkiat.com/blog/send-messages-to-slack/
-	var pl = 'payload= {"username": "@taggy", "icon_emoji": ":thinking_face:", "channel": "#general", "text": "get the name of person from database" + " did a gotcha! They gotcha\'d " + item + "!" }';
+	// https://www.hongkiat.com/blog/send-messages-to-slack/
+	let pl = `payload= ${JSON.stringify({
+		username: "@taggy",
+		icon_emoji: ":thinking_face:",
+		channel: "#general",
+		text:
+			"get the name of person from database" +
+			" did a gotcha! They gotcha'd " +
+			item +
+			"!"
+	})}`;
 
 	const response = await fetch(
 		"https://hooks.slack.com/services/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",
 		{
 			method: "POST",
-			body: pl
+			body: pl,
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded"
+			}
 			//{
 			//	access_token: "xoxp-XXXXXXXX-XXXXXXXX-XXXXX",
 			//	scope: "incoming-webhook",
