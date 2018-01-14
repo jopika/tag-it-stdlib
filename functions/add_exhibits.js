@@ -4,10 +4,11 @@ let db = null;
 
 /**
  * Add exhibits
+ * @param {string} a
  * @param {object} list
  * @returns {object} insertedIds
  */
-module.exports = async function add_exhibits(list, context) {
+module.exports = async function add_exhibits(a = "", list, context) {
 	let uri = process.env["MONGO_URI"];
 
 	// Load database unless cached
