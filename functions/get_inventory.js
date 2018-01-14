@@ -20,7 +20,7 @@ module.exports = async function get_inventory(user_id, context) {
 		.find({ receiver: user_id }, { sort: { date: 1 } });
 
 	let exhibits = new Map();
-	while (!await histCursor.hasNext()) {
+	while (await histCursor.hasNext()) {
 		const { exhibit, collectible } = await histCursor.next();
 		if (!exhibits.has(exhibit)) exhibits.set(exhibit, 0);
 
@@ -32,7 +32,7 @@ module.exports = async function get_inventory(user_id, context) {
 		.collection("exhibit")
 		.find({ key: { $in: Array.from(exhibits.keys()) } });
 	let inventory = [];
-	while (!await itemCursor.hasNext()) {
+	while (await itemCursor.hasNext()) {
 		const { key, collectibles } = await histCursor.next();
 		const invBit = exhibits.get(key);
 
