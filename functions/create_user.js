@@ -6,7 +6,6 @@ let db = null;
  * Create or update a user
  * @param {string} tag tag string
  * @param {string} name name of the user
- * @param {string} hint user written hint about their location
  * @returns {boolean} ok
  */
 module.exports = async function create_user(tag, name, context) {
