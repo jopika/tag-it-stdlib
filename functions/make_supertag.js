@@ -2,12 +2,16 @@ const { MongoClient } = require("mongodb");
 
 let db = null;
 
+const ASC = 1;
+const DESC = -1;
+
 /**
- * Checks if some tag is a supertag
- * @param {string} tag tag number to check
- * @returns {boolean}
+ * Turn a user into a supertag
+ * @param {string} tag user's tag
+ * @param {string} item what item will they supply
+ * @returns {any}
  */
-module.exports = async function is_supertag(tag, context) {
+module.exports = async function make_supertag(tag, item, context) {
 	let uri = process.env["MONGO_URI"];
 
 	// Load database unless cached
@@ -19,7 +23,8 @@ module.exports = async function is_supertag(tag, context) {
 	}
 
 	// get a user where tag equals tag from the user table
-	const user = await db.collection("user").findOne({ tag });
-	// if user is not null, return supertag property
-	return user && user.supertag != null;
+	await db
+		.collection("user")
+		.findOneAndUpdate({ tag }, { $set: { supertag: item } });
+	return true;
 };
