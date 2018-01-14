@@ -30,6 +30,7 @@ module.exports = async function add_exhibits(a = "", list, context) {
 
 			return {
 				key,
+				tag: list[tag].name,
 				name: list[key].name,
 				photoUrl: list[key].photoUrl,
 				collectibles
