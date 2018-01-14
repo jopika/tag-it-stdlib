@@ -6,17 +6,17 @@ let db = null;
 
 /**
  * Log a transaction
- * @param {string} target
- * @param {string} receiver
- * @param {string} itemkey
- * @param {number} collectible
- * @param {number} date
- * @returns {boolean} ok
+ * @param {string} target the tap that was tapped
+ * @param {string} receiver the user that tapped it
+ * @param {object} exhibit object for the exhibit
+ * @param {number} collectible bit flag for the piece
+ * @param {number} date the current time, as milliseconds since epoch
+ * @returns {object}
  */
 module.exports = async function log_transaction(
 	target,
 	receiver,
-	itemkey,
+	exhibit,
 	collectible,
 	date = null,
 	context
@@ -32,26 +32,24 @@ module.exports = async function log_transaction(
 		db = client.db("tagit");
 	}
 
-	const transaction = {
+	const r = await db.collection("transaction").insertOne({
 		target,
 		receiver,
-		item,
+		exhibit: exhibit.key,
 		collectible,
 		date
-	};
+	});
 
-	const r = await db.collection("transaction").insertOne(transaction);
-
-	await report_transaction(db, receiver, itemkey, collectible, context);
-
-	return Boolean(r.result.ok);
+	try {
+		await report_transaction(db, receiver, itemkey, collectible, context);
+		return { ok: Boolean(r.result.ok) };
+	} catch (err) {
+		return { ok: false, error: err.message };
+	}
 };
 
-async function report_transaction(db, receiver, itemkey, collectible, context) {
-	const [user, exhibit] = await Promise.all([
-		db.collection("user").findOne({ tag: receiver }),
-		lib[`${context.service.identifier}.get_info`](itemkey)
-	]);
+async function report_transaction(db, receiver, exhibit, collectible, context) {
+	const user = await db.collection("user").findOne({ tag: receiver });
 
 	const { name } = user;
 	const item = exhibit.collectibles[collectible].description;
@@ -87,6 +85,6 @@ async function report_transaction(db, receiver, itemkey, collectible, context) {
 	);
 
 	if (!response.ok) {
-		console.error("problem 5");
+		throw new Error("problem 5");
 	}
 }

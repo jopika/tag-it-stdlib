@@ -2,7 +2,6 @@ const { MongoClient } = require("mongodb");
 const lib = require("lib");
 
 let db = null;
-let STEAL_BOOL = false;
 
 /**
  * Transfers an item from target (exhibit) to user
@@ -39,9 +38,12 @@ module.exports = async function tagged(userTag, targetTag, context) {
 	let userInventory = userObj.inventory;
 
 	// TODO: Check this
-	let sizeOfCollection = Object.keys(targetCollection).length;
-	let randomNumber = Math.floor(Math.random() * 100) % sizeOfCollection;
-	let item = targetCollection[randomNumber];
+	const collection = Object.keys(targetObj.collectibles).map(
+		k => targetObj.collectibles[k]
+	);
+	let sizeOfCollection = collection.length;
+	let randomNumber = Math.floor(Math.random() * 100) % collection.length;
+	let item = collection[randomNumber];
 
 	userInventory.push(item);
 
@@ -50,7 +52,8 @@ module.exports = async function tagged(userTag, targetTag, context) {
 	await lib[`${context.service.identifier}.log_transaction`](
 		userTag,
 		targetTag,
-		item,
+		targetObj,
+		item.bit,
 		context
 	);
 

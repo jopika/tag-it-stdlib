@@ -25,7 +25,12 @@ module.exports = async function add_exhibits(a = "", list, context) {
 			let collectibles = {};
 			for (const bit of Object.keys(list[key].collectibles)) {
 				const num = Number(bit);
-				collectibles[num] = list[key].collectibles[bit];
+				const source = list[key].collectibles[bit];
+				collectibles[num] = {
+					bit: num,
+					name: source.name,
+					description: source.description
+				};
 			}
 
 			return {
