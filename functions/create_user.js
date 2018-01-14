@@ -29,7 +29,7 @@ module.exports = async function create_user(tag, name, context) {
 			message: `Updated ${tag}`
 		};
 	} else {
-		const r = await collection.insertOne({ tag, name, inventory: [] });
+		const r = await collection.insertOne({ tag, name });
 		return { ok: Boolean(r.result.ok), message: "New user" };
 	}
 };

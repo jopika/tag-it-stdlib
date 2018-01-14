@@ -41,7 +41,7 @@ module.exports = async function log_transaction(
 	});
 
 	try {
-		await report_transaction(db, receiver, itemkey, collectible, context);
+		await report_transaction(db, receiver, exhibit, collectible, context);
 		return { ok: Boolean(r.result.ok) };
 	} catch (err) {
 		throw { ok: false, message: err.message };

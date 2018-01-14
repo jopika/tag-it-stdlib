@@ -38,7 +38,6 @@ module.exports = async function tagged(userTag, targetTag, context) {
 	if (targetObj == null) {
 		throw { ok: false, message: "target does not exist" };
 	}
-	let userInventory = userObj.inventory;
 
 	// TODO: Check this
 	const collection = Object.keys(targetObj.collectibles).map(
@@ -48,16 +47,11 @@ module.exports = async function tagged(userTag, targetTag, context) {
 	let randomNumber = Math.floor(Math.random() * 100) % collection.length;
 	let item = collection[randomNumber];
 
-	userInventory.push(item);
-
-	userTable.updateOne({ id: userTag }, { $set: { inventory: userInventory } });
-
 	await lib[`${context.service.identifier}.log_transaction`](
-		userTag,
 		targetTag,
+		userTag,
 		targetObj,
-		item.bit,
-		context
+		item.bit
 	);
 
 	return {

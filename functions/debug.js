@@ -4,10 +4,10 @@ let db = null;
 
 /**
  * Download EVERYTHING
- * @param {boolean} wipe clean the db for testing
+ * @param {string} wipe clean the collection for testing
  * @returns {object} everything.
  */
-module.exports = async function debug(wipe = false, context) {
+module.exports = async function debug(wipe = "", context) {
 	let uri = process.env["MONGO_URI"];
 
 	// Load database unless cached
@@ -18,31 +18,23 @@ module.exports = async function debug(wipe = false, context) {
 		db = client.db("tagit");
 	}
 
+	if (wipe) {
+		if (wipe.endsWith("s")) wipe = wipe.substring(0, -1);
+		await db.collection(wipe).deleteMany();
+	}
+
 	const collections = [
 		db.collection("user"),
 		db.collection("exhibit"),
 		db.collection("transaction")
 	];
+	const [users, exhibits, transactions] = await Promise.all(
+		collections.map(async collection => collection.find().toArray())
+	);
 
-	if (wipe) {
-		await Promise.all(
-			collections.map(async collection => collection.deleteMany())
-		);
-
-		return {
-			users: [],
-			exhibits: [],
-			transactions: []
-		};
-	} else {
-		const [users, exhibits, transactions] = await Promise.all(
-			collections.map(async collection => collection.find().toArray())
-		);
-
-		return {
-			users,
-			exhibits,
-			transactions
-		};
-	}
+	return {
+		users,
+		exhibits,
+		transactions
+	};
 };

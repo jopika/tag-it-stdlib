@@ -15,10 +15,33 @@ module.exports = async function get_inventory(user_id, context) {
 		db = client.db("tagit");
 	}
 
-	let userTable = db.collection("user");
-	let userObj = await userTable.findOne({ tag: user_id });
-	let inventory = userObj.inventory || [];
+	const histCursor = db
+		.collection("transaction")
+		.find({ receiver: user_id }, { sort: { date: 1 } });
 
-	let array = inventory.map(item => item.name);
-	return array;
+	let exhibits = new Map();
+	while (!await histCursor.hasNext()) {
+		const { exhibit, collectible } = await histCursor.next();
+		if (!exhibits.has(exhibit)) exhibits.set(exhibit, 0);
+
+		const bits = exhibits.get(exhibit);
+		exhibits.set(exhibit, bits | collectible);
+	}
+
+	const itemCursor = db
+		.collection("exhibit")
+		.find({ key: { $in: Array.from(exhibits.keys()) } });
+	let inventory = [];
+	while (!await itemCursor.hasNext()) {
+		const { key, collectibles } = await histCursor.next();
+		const invBit = exhibits.get(key);
+
+		for (const bitStr of Object.keys(collectibles)) {
+			const bits = Number(bitStr);
+			if ((bits & invBit) === bits) {
+				inventory.push(collectibles[bits].name);
+			}
+		}
+	}
+	return inventory;
 };

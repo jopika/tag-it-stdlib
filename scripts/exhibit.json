@@ -1,7 +1,7 @@
 [
 	{
 		"key": "mummy",
-		"tag": "123",
+		"tag": "-KyyGUMA6nuFs9lkHGxg",
 		"name": "Mummy",
 		"photoUrl":
 			"https://wonderopolis.org/wp-content/uploads/2016/12/Mummydreamstime_xxl_25590803.jpg",
@@ -29,6 +29,30 @@
 				"name": "Accessories of Mummy",
 				"description":
 					"\"Natural\" mummies can be made without embalming and wrapping them up--but only if conditions are right. These conditions include extreme temperatures and dryness, such as in the Swiss Alps, and some places in Central Asia, South America and Alaska."
+			}
+		}
+	},
+	{
+		"key": "whale",
+		"tag": "456",
+		"name": "Blue whale",
+		"photoUrl":
+			"https://www.vancouverobserver.com/sites/vancouverobserver.com/files/imagecache/vo_scale_w850/images/article/body/IMG_0615_0.JPG",
+		"collectibles": {
+			"0b001": {
+				"name": "Skull of Whale",
+				"description":
+					"Blue whales are the biggest animals that have ever lived on earth — longer than the longest known dinosaur, and much more massive."
+			},
+			"0b010": {
+				"name": "Belly of the Whale",
+				"description":
+					"Blue whales feed exclusively on one of the smallest: krill. Cold, deep ocean waters are home to superabundant populations of these small shrimplike creatures. Individual krill are approximately 2 cm long, but swarms of these tiny crustaceans can take up hundreds of square kilometers of ocean."
+			},
+			"0b100": {
+				"name": "Fins of Whale",
+				"description":
+					"Blue whales mature at the age of 5 or 6 years. After reaching maturity, the females give birth to a calf every 2 or 3 years. Gestation takes 11 months, and the newborn calves are 8 m long and weigh about 4 tonnes. In size and weight, they are approximately as big as 2 minivans."
 			}
 		}
 	}
