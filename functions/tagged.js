@@ -7,7 +7,7 @@ let db = null;
  * Transfers an item from target (exhibit) to user
  * @param {string} userTag - user ID that recieves item
  * @param {string} targetTag - target ID to recieve item from
- * @returns {boolean} success validation
+ * @returns {object} success validation
  */
 module.exports = async function tagged(userTag, targetTag, context) {
 	let uri = process.env["MONGO_URI"];
@@ -16,24 +16,27 @@ module.exports = async function tagged(userTag, targetTag, context) {
 		const client = await MongoClient.connect(uri);
 		db = client.db("tagit");
 	}
-	// ASSUME: This function is called when the
-	// target is an exhibit.
+	// ASSUME: This function is called when the target is an exhibit.
 
-	let exhibitTable = db.collection("exhibit");
-	let userTable = db.collection("user");
+	const pastTapped = await db
+		.collection("transaction")
+		.findOne({ target: targetTag, receiver: userTag });
 
+	if (pastTapped) {
+		throw { ok: false, message: "You already tapped this tag" };
+	}
+
+	const userTable = db.collection("user");
 	const [userObj, targetObj] = await Promise.all([
 		userTable.findOne({ tag: userTag }),
-		exhibitTable.findOne({ tag: targetTag })
+		db.collection("exhibit").findOne({ tag: targetTag })
 	]);
 
 	if (userObj == null) {
-		console.log("userObj is null");
-		return false;
+		throw { ok: false, message: "user does not exist" };
 	}
 	if (targetObj == null) {
-		console.log("targetObj is null");
-		return false;
+		throw { ok: false, message: "target does not exist" };
 	}
 	let userInventory = userObj.inventory;
 
@@ -57,5 +60,5 @@ module.exports = async function tagged(userTag, targetTag, context) {
 		context
 	);
 
-	return true;
+	return { ok: true };
 };

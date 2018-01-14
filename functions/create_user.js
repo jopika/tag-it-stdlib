@@ -6,7 +6,7 @@ let db = null;
  * Create or update a user
  * @param {string} tag tag string
  * @param {string} name name of the user
- * @returns {boolean} ok
+ * @returns {object} ok
  */
 module.exports = async function create_user(tag, name, context) {
 	let uri = process.env["MONGO_URI"];
@@ -23,5 +23,5 @@ module.exports = async function create_user(tag, name, context) {
 	const r = await db
 		.collection("user")
 		.findOneAndUpdate({ tag }, { tag, name, inventory: [] }, { upsert: true });
-	return Boolean(r.ok);
+	return { ok: Boolean(r.ok) };
 };

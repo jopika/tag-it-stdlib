@@ -4,8 +4,8 @@ let db = null;
 
 /**
  * Get info about exhibits
- * @param {array} ids
- * @returns {object} items
+ * @param {array} ids list of string names of the exhibit, ie: ["mummy"]
+ * @returns {object} items - map of exhibit names to details
  */
 module.exports = async function get_bulk_info(ids, context) {
 	let uri = process.env["MONGO_URI"];

@@ -6,8 +6,8 @@ let db = null;
 
 /**
  * Log a transaction
- * @param {string} target the tap that was tapped
- * @param {string} receiver the user that tapped it
+ * @param {string} target the tag key that was tapped
+ * @param {string} receiver the user tag that tapped it
  * @param {object} exhibit object for the exhibit
  * @param {number} collectible bit flag for the piece
  * @param {number} date the current time, as milliseconds since epoch
@@ -44,7 +44,7 @@ module.exports = async function log_transaction(
 		await report_transaction(db, receiver, itemkey, collectible, context);
 		return { ok: Boolean(r.result.ok) };
 	} catch (err) {
-		return { ok: false, error: err.message };
+		throw { ok: false, message: err.message };
 	}
 };
 
@@ -90,7 +90,7 @@ async function report_transaction(db, receiver, exhibit, collectible, context) {
 			emoji = "grin";
 			break;
 	}
-	let ex = Math.floor(Math.random()*3)+1;
+	let ex = Math.floor(Math.random() * 3) + 1;
 	let excl = "";
 	for (i = 0; i <= ex; i++) {
 		excl += "!";

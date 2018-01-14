@@ -4,8 +4,8 @@ let db = null;
 
 /**
  * Add exhibits
- * @param {string} a
- * @param {object} list
+ * @param {string} a first param can't be an object
+ * @param {object} list exhibits JSON object
  * @returns {object} insertedIds
  */
 module.exports = async function add_exhibits(a = "", list, context) {
