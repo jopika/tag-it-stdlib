@@ -99,7 +99,8 @@ async function report_transaction(db, receiver, exhibit, collectible, context) {
 		username: "@taggy",
 		icon_emoji: ":" + emoji + ":",
 		channel: "#general",
-		text: name + " " + message + " " + item + excl
+		text: name + " " + message + " " + item
+		// + excl
 	})}`;
 
 	const response = await fetch(
