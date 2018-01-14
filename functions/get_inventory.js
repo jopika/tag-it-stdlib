@@ -17,7 +17,8 @@ module.exports = async function get_inventory(user_id, context) {
 
 	let userTable = db.collection("user");
 	let userObj = await userTable.findOne({ tag: user_id });
-	let inventory = userObj.inventory;
+	let inventory = userObj.inventory || [];
 
-	let array = userObj.inventory.map(item => item.name);
+	let array = inventory.map(item => item.name);
+	return array;
 };
