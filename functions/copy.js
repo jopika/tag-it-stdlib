@@ -6,42 +6,28 @@ let cache = null;
 /**
 * @returns {array}
 */
-module.exports = (context, callback) => {
-  let uri = process.env['MONGO_URI'];
+module.exports = async (context) => {
+	let uri = process.env['MONGO_URI'];
 
-  try {
-    if (cache === null) {
-      MongoClient.connect(uri, (error, db) => {
-        if (error) {
-          console.log(error['errors']);
-          return callback(error);
-        }
-        cache = db;
-        readTodos(db, callback);
-      });
-    } else {
-      readTodos(cache, callback);
-    }
-  } catch (error) {
-    console.log(error);
-    return callback(error);
-  }
+	if (cache === null) {
+		const db = await MongoClient.connect(uri);
+		cache = db;
+		return readTodos(db);
+	} else {
+		return readTodos(cache, callback);
+	}
 };
 
-const readTodos = (db, callback) => {
-  let cursor = db.collection('todo').find();
-  let todos = [];
-  cursor.each((error, item) => {
-    if (error) {
-      console.log(error);
-    }
-    if (item == null) {
-      return callback(null, todos);
-    }
-    todos.push({
-      id: item._id,
-      text: item.text,
-      completed: item.completed
-    });
-  });
-};
+async function readTodos(db) {
+	const items = await db.collection('todo').find();
+
+	let todos = [];
+	for (const item of (await items.toArray())) {
+		todos.push({
+			id: item._id,
+			text: item.text,
+			completed: item.completed
+		});
+	}
+	return todos;
+}
