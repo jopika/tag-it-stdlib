@@ -1,0 +1,33 @@
+{
+	"skeleton": {
+		"name": "Mummy",
+		"photoUrl":
+			"https://wonderopolis.org/wp-content/uploads/2016/12/Mummydreamstime_xxl_25590803.jpg",
+		"collectibles": {
+			"0b00001": {
+				"name": "Head of Mummy",
+				"description": "Egyptians started making mummies around 3400 BCE."
+			},
+			"0b00010": {
+				"name": "Torso of Mummy",
+				"description":
+					"In 2600 BC got better at making mummies. They finally figured out that if they removed the body's internal organs before wrapping a person up, their body would last instead of rot."
+			},
+			"0b00100": {
+				"name": "Arm of Mummy",
+				"description":
+					"Mummy making was a big production! It employed a lot of people: embalmers, cutters (surgeon), priests and scribes."
+			},
+			"0b01000": {
+				"name": "Leg of Mummy",
+				"description":
+					"Not just pharaohs were mummified. In ancient Egypt, anyone could be preserved when they died, as long as they could afford it."
+			},
+			"0b10000": {
+				"name": "Accessories of Mummy",
+				"description":
+					"\"Natural\" mummies can be made without embalming and wrapping them up--but only if conditions are right. These conditions include extreme temperatures and dryness, such as in the Swiss Alps, and some places in Central Asia, South America and Alaska."
+			}
+		}
+	}
+}
