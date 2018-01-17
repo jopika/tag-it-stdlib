@@ -33,7 +33,7 @@ module.exports = async function get_inventory(user_id, context) {
 		.find({ key: { $in: Array.from(exhibits.keys()) } });
 	let inventory = [];
 	while (await itemCursor.hasNext()) {
-		const { key, collectibles } = await histCursor.next();
+		const { key, collectibles } = await itemCursor.next();
 		const invBit = exhibits.get(key);
 
 		for (const bitStr of Object.keys(collectibles)) {
